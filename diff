@@ -1,0 +1,31 @@
+--- ngx_http_upstream_hash_module/ngx_http_upstream_hash_module.c	2015-06-19 18:12:59.000000000 +0800
++++ nginx-1.7.2/src/http/modules/ngx_http_upstream_hash_module.c	2014-06-17 20:51:26.000000000 +0800
+@@ -306,7 +306,7 @@
+ 
+     for (i = 0; i < peers->number; i++) {
+         peer = &peers->peer[i];
+-        server = &peer->name;
++        server = &peer->server;
+ 
+         /*
+          * Hash expression is compatible with Cache::Memcached::Fast:
+@@ -360,7 +360,7 @@
+             ngx_crc32_update(&hash, (u_char *) &prev_hash, sizeof(uint32_t));
+             ngx_crc32_final(hash);
+ 
+-            ngx_http_upstream_add_chash_point(points, hash, &peer->name);
++            ngx_http_upstream_add_chash_point(points, hash, &peer->server);
+ 
+             prev_hash = hash;
+         }
+@@ -506,8 +506,8 @@
+                 continue;
+             }
+ 
+-            if (peer->name.len != server->len
+-                || ngx_strncmp(peer->name.data, server->data, server->len)
++            if (peer->server.len != server->len
++                || ngx_strncmp(peer->server.data, server->data, server->len)
+                    != 0)
+             {
+                 continue;
